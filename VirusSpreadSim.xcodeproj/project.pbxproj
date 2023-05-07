@@ -9,21 +9,21 @@
 /* Begin PBXBuildFile section */
 		5B458A822A07AA7C00705901 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B458A812A07AA7C00705901 /* AppDelegate.swift */; };
 		5B458A842A07AA7C00705901 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B458A832A07AA7C00705901 /* SceneDelegate.swift */; };
-		5B458A862A07AA7C00705901 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B458A852A07AA7C00705901 /* ViewController.swift */; };
-		5B458A892A07AA7C00705901 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B458A872A07AA7C00705901 /* Main.storyboard */; };
+		5B458A862A07AA7C00705901 /* ParameterInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B458A852A07AA7C00705901 /* ParameterInputViewController.swift */; };
 		5B458A8B2A07AA7D00705901 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B458A8A2A07AA7D00705901 /* Assets.xcassets */; };
 		5B458A8E2A07AA7D00705901 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B458A8C2A07AA7D00705901 /* LaunchScreen.storyboard */; };
+		5B458A962A07ACE900705901 /* SimulationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B458A952A07ACE900705901 /* SimulationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5B458A7E2A07AA7C00705901 /* VirusSpreadSim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirusSpreadSim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B458A812A07AA7C00705901 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5B458A832A07AA7C00705901 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		5B458A852A07AA7C00705901 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		5B458A882A07AA7C00705901 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5B458A852A07AA7C00705901 /* ParameterInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterInputViewController.swift; sourceTree = "<group>"; };
 		5B458A8A2A07AA7D00705901 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B458A8D2A07AA7D00705901 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5B458A8F2A07AA7D00705901 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5B458A952A07ACE900705901 /* SimulationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +56,31 @@
 		5B458A802A07AA7C00705901 /* VirusSpreadSim */ = {
 			isa = PBXGroup;
 			children = (
-				5B458A812A07AA7C00705901 /* AppDelegate.swift */,
-				5B458A832A07AA7C00705901 /* SceneDelegate.swift */,
-				5B458A852A07AA7C00705901 /* ViewController.swift */,
-				5B458A872A07AA7C00705901 /* Main.storyboard */,
+				5B458A972A07ACF300705901 /* App */,
+				5B458A982A07AD0200705901 /* Controllers */,
 				5B458A8A2A07AA7D00705901 /* Assets.xcassets */,
 				5B458A8C2A07AA7D00705901 /* LaunchScreen.storyboard */,
 				5B458A8F2A07AA7D00705901 /* Info.plist */,
 			);
 			path = VirusSpreadSim;
+			sourceTree = "<group>";
+		};
+		5B458A972A07ACF300705901 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				5B458A812A07AA7C00705901 /* AppDelegate.swift */,
+				5B458A832A07AA7C00705901 /* SceneDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		5B458A982A07AD0200705901 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5B458A852A07AA7C00705901 /* ParameterInputViewController.swift */,
+				5B458A952A07ACE900705901 /* SimulationViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,7 +143,6 @@
 			files = (
 				5B458A8E2A07AA7D00705901 /* LaunchScreen.storyboard in Resources */,
 				5B458A8B2A07AA7D00705901 /* Assets.xcassets in Resources */,
-				5B458A892A07AA7C00705901 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,7 +153,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B458A862A07AA7C00705901 /* ViewController.swift in Sources */,
+				5B458A862A07AA7C00705901 /* ParameterInputViewController.swift in Sources */,
+				5B458A962A07ACE900705901 /* SimulationViewController.swift in Sources */,
 				5B458A822A07AA7C00705901 /* AppDelegate.swift in Sources */,
 				5B458A842A07AA7C00705901 /* SceneDelegate.swift in Sources */,
 			);
@@ -147,14 +163,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		5B458A872A07AA7C00705901 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5B458A882A07AA7C00705901 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		5B458A8C2A07AA7D00705901 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -292,9 +300,8 @@
 				INFOPLIST_FILE = VirusSpreadSim/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -302,6 +309,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Ataev-Aleksandr.VirusSpreadSim";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -320,9 +330,8 @@
 				INFOPLIST_FILE = VirusSpreadSim/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -330,6 +339,9 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Ataev-Aleksandr.VirusSpreadSim";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
