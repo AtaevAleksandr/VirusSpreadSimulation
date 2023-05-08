@@ -9,7 +9,6 @@ import UIKit
 
 final class ParameterInputViewController: UIViewController {
 
-
     //MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +23,7 @@ final class ParameterInputViewController: UIViewController {
         let appearance = UINavigationBarAppearance()
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        scrollView.contentSize = CGSize(width: .zero, height: view.frame.height + 100)
         addObservers()
     }
 
@@ -71,6 +71,7 @@ final class ParameterInputViewController: UIViewController {
         textField.placeholder = "100"
         textField.backgroundColor = .white
         textField.textColor = .black
+        textField.keyboardType = .numberPad
         textField.layer.cornerRadius = 7
         textField.layer.borderColor = UIColor.gray.cgColor
         textField.layer.borderWidth = 0.5
@@ -96,6 +97,7 @@ final class ParameterInputViewController: UIViewController {
         textField.placeholder = "3"
         textField.backgroundColor = .white
         textField.textColor = .black
+        textField.keyboardType = .numberPad
         textField.layer.cornerRadius = 7
         textField.layer.borderColor = UIColor.gray.cgColor
         textField.layer.borderWidth = 0.5
@@ -106,9 +108,9 @@ final class ParameterInputViewController: UIViewController {
         return textField
     }()
 
-    private lazy var timerLabel: UILabel = {
+    private lazy var recalculationPeriodLabel: UILabel = {
         let label = UILabel()
-        label.text = "Timer"
+        label.text = "Period recalculation"
         label.textColor = .black
         label.textAlignment = .left
         label.font = .boldSystemFont(ofSize: 18)
@@ -116,11 +118,12 @@ final class ParameterInputViewController: UIViewController {
         return label
     }()
 
-    private lazy var timerTextField: UITextField = {
+    private lazy var recalculationPeriodTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "1"
         textField.backgroundColor = .white
         textField.textColor = .black
+        textField.keyboardType = .numberPad
         textField.layer.cornerRadius = 7
         textField.layer.borderColor = UIColor.gray.cgColor
         textField.layer.borderWidth = 0.5
@@ -143,7 +146,7 @@ final class ParameterInputViewController: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.configuration?.baseBackgroundColor = .systemRed
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(startSim), for: .touchUpInside)
+        button.addTarget(self, action: #selector(startSimulation), for: .touchUpInside)
         return button
     }()
 
@@ -160,9 +163,8 @@ final class ParameterInputViewController: UIViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             contentView.centerYAnchor.constraint(equalTo: scrollView.centerYAnchor),
-            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, constant: 100),
 
-            mainLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 20),
+            mainLabel.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 10),
             mainLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
 
             groupSizeLabel.topAnchor.constraint(equalTo: mainLabel.bottomAnchor, constant: 50),
@@ -181,30 +183,51 @@ final class ParameterInputViewController: UIViewController {
             infectionFactorTextField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             infectionFactorTextField.heightAnchor.constraint(equalToConstant: 35),
 
-            timerLabel.topAnchor.constraint(equalTo: infectionFactorTextField.bottomAnchor, constant: 20),
-            timerLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            recalculationPeriodLabel.topAnchor.constraint(equalTo: infectionFactorTextField.bottomAnchor, constant: 20),
+            recalculationPeriodLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
 
-            timerTextField.topAnchor.constraint(equalTo: timerLabel.bottomAnchor, constant: 10),
-            timerTextField.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
-            timerTextField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            timerTextField.heightAnchor.constraint(equalToConstant: 35),
+            recalculationPeriodTextField.topAnchor.constraint(equalTo: recalculationPeriodLabel.bottomAnchor, constant: 10),
+            recalculationPeriodTextField.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+            recalculationPeriodTextField.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+            recalculationPeriodTextField.heightAnchor.constraint(equalToConstant: 35),
 
-            simButton.topAnchor.constraint(equalTo: timerTextField.bottomAnchor, constant: 50),
+            simButton.topAnchor.constraint(equalTo: recalculationPeriodTextField.bottomAnchor, constant: 50),
             simButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             simButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -10),
             simButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
+    
     private func addSubviews() {
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         [mainLabel, groupSizeLabel, groupSizeTextField, infectionFactorLabel,
-         infectionFactorTextField, timerLabel, timerTextField, simButton].forEach { contentView.addSubview($0) }
+         infectionFactorTextField, recalculationPeriodLabel, recalculationPeriodTextField, simButton].forEach { contentView.addSubview($0) }
     }
 
-    @objc private func startSim() {
-        let viewController = SimulationViewController()
-        navigationController?.pushViewController(viewController, animated: true)
+    @objc private func startSimulation() {
+        if let groupSize = Int(groupSizeTextField.text ?? "0"),
+           let recalculationPeriod = Double(recalculationPeriodTextField.text ?? "0"),
+           let infectionFactor = Int(infectionFactorTextField.text ?? "0"),
+           groupSize > 0,
+           recalculationPeriod > 0 {
+            let simulationVC = SimulationViewController()
+            simulationVC.groupSize = groupSize
+            simulationVC.infectionFactor = infectionFactor
+            simulationVC.recalculationPeriod = recalculationPeriod
+
+            simulationVC.matrix = makeMatrix(groupSize)
+            navigationController?.pushViewController(simulationVC, animated: true)
+            dismissKeyboard()
+        } else if groupSizeTextField.text == "" || recalculationPeriodTextField.text == "" || infectionFactorTextField.text == "" {
+            showAlert()
+        }
+
+        func makeMatrix(_ number: Int) -> [[Bool]] {
+            let rows = sqrt(Double(number))
+            let columns = sqrt(Double(number))
+            return Array(repeating: Array(repeating: false, count: Int(columns)), count: Int(rows))
+        }
     }
 
     private func addObservers() {
@@ -219,13 +242,27 @@ final class ParameterInputViewController: UIViewController {
 
     @objc private func keyboardDidShow(notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
-        let keyboardFrameSize: CGRect = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        scrollView.setContentOffset(CGPoint(x: 0, y: 20), animated: true)
-        scrollView.contentSize = CGSize(width: .zero, height: view.bounds.size.height + keyboardFrameSize.height)
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        scrollView.setContentOffset(CGPoint(x: 0, y: 10), animated: true)
     }
 
     @objc private func keyboardDidHide(notification: Notification) {
         scrollView.setContentOffset(CGPoint(x: 0, y: -100), animated: true)
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
+    }
+
+    func showAlert() {
+        let alertController = UIAlertController(title: "Dear User,",
+                                                message: "Please fill in all the text fields with the required information. Thank you!", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion:nil)
+        dismissKeyboard()
+
     }
 }
 
