@@ -24,7 +24,8 @@ final class PersonsCollectionViewCell: UICollectionViewCell {
     //MARK: - Clousers
     lazy var imageView: UIImageView = {
         let image = UIImageView()
-        image.backgroundColor = .green
+        image.image = UIImage(systemName: "person.crop.circle")
+        image.tintColor = .systemGreen
         image.layer.cornerRadius = frame.width / 2
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
@@ -38,6 +39,16 @@ final class PersonsCollectionViewCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+
+    func setCell(_ item: Bool) {
+        if !item  {
+            imageView.image = UIImage(systemName: "person.crop.circle")
+            imageView.tintColor = .systemGreen
+        } else {
+            imageView.image = UIImage(systemName: "person.crop.circle")
+            imageView.tintColor = .systemRed
+        }
     }
 }
 

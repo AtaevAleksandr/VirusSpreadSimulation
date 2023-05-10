@@ -80,7 +80,7 @@ class SimulationViewController: UIViewController {
         let label = UILabel()
         label.textAlignment = .left
         label.textColor = .systemGreen
-        label.text = "HEALTHY = \(matrixElements)"
+        label.text = "HEALTHY = \(healthyPerson)"
         label.font = .systemFont(ofSize: 18)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -110,23 +110,6 @@ class SimulationViewController: UIViewController {
         return collectionView
     }()
 
-    private lazy var stopButton: UIButton = {
-        let button = UIButton()
-        button.configuration = .filled()
-        button.setTitle("STOP!", for: .normal)
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 2, height: 2)
-        button.configuration?.cornerStyle = .large
-        button.layer.shadowOpacity = 0.6
-        button.layer.shadowRadius = 4
-        button.setTitleColor(.white, for: .normal)
-        button.configuration?.baseBackgroundColor = .systemBlue
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.addTarget(self, action: #selector(stopIt), for: .touchUpInside)
-        return button
-    }()
-
-
     //MARK: - Methods
     private func setConstraints() {
         NSLayoutConstraint.activate([
@@ -140,17 +123,12 @@ class SimulationViewController: UIViewController {
             personsCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             personsCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
             personsCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            personsCollectionView.bottomAnchor.constraint(equalTo: stopButton.topAnchor, constant: -8),
-
-            stopButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
-            stopButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
-            stopButton.widthAnchor.constraint(equalToConstant: 150),
-            stopButton.heightAnchor.constraint(equalToConstant: 45)
+            personsCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
         ])
     }
 
     private func addSubviews() {
-        [healthyLabel, infectedLabel, personsCollectionView, stopButton].forEach { view.addSubview($0) }
+        [healthyLabel, infectedLabel, personsCollectionView].forEach { view.addSubview($0) }
     }
 
     private func updateView() {
@@ -158,7 +136,6 @@ class SimulationViewController: UIViewController {
             timer?.invalidate()
             timer = nil
         }
-        replaceRandomNeighbors(matrix: matrix, withFactor: infectionFactor)
         healthyLabel.text = "HEALTHY = \(healthyPerson)"
         infectedLabel.text = "INFECTED = \(infectionPerson)"
         self.personsCollectionView.reloadData()
@@ -175,10 +152,8 @@ class SimulationViewController: UIViewController {
                         let randomRow = Int.random(in: max(row - 1, 0)...min(row + 1, numRows - 1))
                         let randomColumn = Int.random(in: max(column - 1, 0)...min(column + 1, numColumns - 1))
 
-                        DispatchQueue.main.async {
-                            if matrix[randomRow][randomColumn] == false {
-                                self.matrix[randomRow][randomColumn] = true
-                            }
+                        if matrix[randomRow][randomColumn] == false {
+                            self.matrix[randomRow][randomColumn] = true
                         }
                     }
                 }
@@ -188,31 +163,20 @@ class SimulationViewController: UIViewController {
 
     private func selectCell() {
         if timer == nil {
-            DispatchQueue.global(qos: .background).async {
-                self.timer = Timer.scheduledTimer(withTimeInterval: self.recalculationPeriod, repeats: true) { timer in
-                    self.seconds += 1
-                    DispatchQueue.main.async {
-                        self.updateView()
-                    }
+            timer = Timer.init(fire: Date(), interval: recalculationPeriod, repeats: true) { [weak self] timer in
+                guard let self = self else {
+                    timer.invalidate()
+                    return
                 }
-
-                self.timer!.tolerance = 0.1
-                let runLoop = RunLoop.current
-                runLoop.add(self.timer!, forMode: .default)
-                runLoop.run()
+                self.seconds += 1
+                self.replaceRandomNeighbors(matrix: self.matrix, withFactor: self.infectionFactor)
+                DispatchQueue.main.async {
+                    self.updateView()
+                }
             }
-            addRandomRedInMatrix(matrix)
-        }
-    }
-
-    private func addRandomRedInMatrix(_ matrix: [[Bool]]) {
-        DispatchQueue.global(qos: .background).async {
-            let randomRow = Int.random(in: 0..<matrix.count)
-            let randomColumn = Int.random(in: 0..<matrix[randomRow].count)
-            DispatchQueue.main.async {
-                if matrix[randomRow][randomColumn] == false {
-                    self.matrix[randomRow][randomColumn] = true
-                }
+            if let timer = timer {
+                RunLoop.current.add(timer, forMode: .default)
+                RunLoop.current.run()
             }
         }
     }
@@ -240,27 +204,14 @@ extension SimulationViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PersonsCollectionViewCell.reuseId, for: indexPath) as! PersonsCollectionViewCell
         let item = matrix[indexPath.section][indexPath.row]
-        if !item  {
-            cell.imageView.backgroundColor = .systemGreen
-        } else {
-            cell.imageView.backgroundColor = .systemRed
-        }
+        cell.setCell(item)
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        DispatchQueue.global(qos: .background).async {
-            self.selectCell()
-            let item = self.matrix[indexPath.section][indexPath.row]
-            DispatchQueue.main.async {
-                if item {
-                    self.matrix[indexPath.section][indexPath.row].toggle()
-                } else {
-                    self.matrix[indexPath.section][indexPath.row].toggle()
-                }
-            }
-        }
-        collectionView.reloadData()
+        self.matrix[indexPath.section][indexPath.row] = true
+        self.selectCell()
+        collectionView.reloadItems(at: [indexPath])
     }
 }
 
