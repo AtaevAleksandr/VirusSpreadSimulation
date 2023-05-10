@@ -19,7 +19,7 @@
 7) Так же пользователь может видеть количество «зараженных» людей.
 
 <div>
-  <img src="IMG_6769.PNG" width="300" />
-  <img src="IMG_6770.PNG" width="300" />
-  <img src="IMG_6771.PNG" width="300" />
+  <img src="IMG_6769.PNG" width="270" />
+  <img src="IMG_6770.PNG" width="270" />
+  <img src="IMG_6771.PNG" width="270" />
 </div>
